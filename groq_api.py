@@ -44,7 +44,7 @@ def extract_parties_and_roles(doc_text, model):
     Translate the given text from Tamil to English and extract information 
     about the names of people mentioned in the text and the roles they 
     played in the legal exchange in detail without leaving any information 
-    since everything's sensitive:\n\n{doc_text}
+    since everything's sensitive, provide a json schema with the details and only return the json schema that fits the json schema for aws dynamodb and not any other texts in any form, you don't even have greet or give notes:\n\n{doc_text}
     """
     completion = client.chat.completions.create(
         model=model,
@@ -66,7 +66,7 @@ def extract_parties_and_roles(doc_text, model):
     return extracted_info
 
 # Main function to process the Word document and extract information
-def main(docx_name, groq_model):
+def groq_res(docx_name, groq_model):
     # Get the root directory where the script is located
     root_dir = os.path.dirname(os.path.abspath(__file__))
     docx_path = os.path.join(root_dir, docx_name)
@@ -82,14 +82,4 @@ def main(docx_name, groq_model):
     # Print the extracted information
     print("\nExtracted Information:")
     print(extracted_info)
-
-if __name__ == "__main__":
-    # Example usage
-    pdf_name = "test.pdf"  # PDF file name in the script's directory
-    docx_name = "output_text.docx"  # The document created by the OCR pipeline
-    ollama_model = "llama-3.3-70b-versatile"  # Ollama model to use
-    indic_nlp_resources_folder = "indic_nlp_resources"  # Folder name in the script's directory
-    result = ocr.ocr_doc(pdf_name, indic_nlp_resources_folder)
-    print(result)
-    shutil.rmtree('output_images')
-    main(docx_name, ollama_model)
+    return extracted_info
