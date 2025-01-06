@@ -4,7 +4,7 @@ import tempfile
 import groq_api
 import shutil
 import ocr
-app = Flask(_name_)
+app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def upload_pdf():
