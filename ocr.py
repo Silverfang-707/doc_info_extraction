@@ -1,7 +1,8 @@
 import os
+import shutil
 from modules import pdf2img, transcribe
-
-def main(pdf_name, indic_nlp_resources_folder):
+import ocr
+def ocr_doc(pdf_name, indic_nlp_resources_folder):
     """
     Main function to convert a PDF into images, transcribe the text from the images, 
     and save the transcribed text into a Word document.
@@ -32,11 +33,3 @@ def main(pdf_name, indic_nlp_resources_folder):
     transcription_result = transcribe.extract_text_from_folder_to_docx(output_folder, doc_path, indic_nlp_resources_path)
 
     return transcription_result
-
-if __name__ == "__main__":
-    # Example usage
-    pdf_name = "test.pdf"  # PDF file name in the script's directory
-    indic_nlp_resources_folder = "indic_nlp_resources"  # Folder name in the script's directory
-
-    result = main(pdf_name, indic_nlp_resources_folder)
-    print(result)

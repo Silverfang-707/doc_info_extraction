@@ -1,8 +1,7 @@
 import os
 import torch
-import ollama
 from docx import Document
-from openai import OpenAI
+from groq import Groq
 import ocr
 import shutil
 
@@ -20,10 +19,11 @@ def extract_text_from_docx(docx_path):
     doc = Document(docx_path)
     return "\n".join([para.text for para in doc.paragraphs if para.text.strip()])
 
-# Function to generate embeddings for text using Ollama
-def generate_embeddings(text, model='mxbai-embed-large'):
-    response = ollama.embeddings(model=model, prompt=text)
-    return response["embedding"]
+# Function to generate embeddings for text using Groq API
+def generate_embeddings(text, model="mxbai-embed-large"):
+    client = Groq(api_key="your_api_key_here")
+    response = client.embeddings.create(model=model, input=text)
+    return response["data"][0]["embedding"]
 
 # Function to find relevant context from a vault
 def get_relevant_context(prompt, vault_embeddings, vault_content, top_k=3):
@@ -35,20 +35,37 @@ def get_relevant_context(prompt, vault_embeddings, vault_content, top_k=3):
     top_indices = torch.topk(cos_scores, k=top_k)[1].tolist()
     return [vault_content[idx].strip() for idx in top_indices]
 
-# Function to interact with the Ollama model for structured information extraction
+# Function to interact with the Groq API for structured information extraction
 def extract_parties_and_roles(doc_text, model):
-    prompt = f"you're given the contents of a legal document that's written in Tamil, Translate the given text from Tamil to English and extract information about the names people mentioned in the text and the roles they played in the legal exchange in english in detail without leaving any information since everything's sensitive:\n\n{doc_text}"
-    response = client.chat.completions.create(
+    client = Groq(api_key="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")
+    prompt = f"""
+    You're given the contents of a legal document written in Tamil. 
+    Translate the given text from Tamil to English and extract information 
+    about the names of people mentioned in the text and the roles they 
+    played in the legal exchange in detail without leaving any information 
+    since everything's sensitive:\n\n{doc_text}
+    """
+    completion = client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": "You are an expert at extracting structured information and translation."},
             {"role": "user", "content": prompt}
-        ]
+        ],
+        temperature=0.7,
+        max_tokens=1024,
+        top_p=1,
+        stream=True,
+        stop=None,
     )
-    return response.choices[0].message.content
+
+    # Handle streaming response
+    extracted_info = ""
+    for chunk in completion:
+        extracted_info += chunk.choices[0].delta.content or ""
+    return extracted_info
 
 # Main function to process the Word document and extract information
-def main(docx_name, ollama_model):
+def main(docx_name, groq_model):
     # Get the root directory where the script is located
     root_dir = os.path.dirname(os.path.abspath(__file__))
     docx_path = os.path.join(root_dir, docx_name)
@@ -57,19 +74,13 @@ def main(docx_name, ollama_model):
     print("Extracting text from the document...")
     doc_text = extract_text_from_docx(docx_path)
 
-    # Extract parties and roles using the Ollama model
+    # Extract parties and roles using the Groq model
     print("Extracting parties and roles...")
-    extracted_info = extract_parties_and_roles(doc_text, ollama_model)
+    extracted_info = extract_parties_and_roles(doc_text, groq_model)
 
     # Print the extracted information
-    print("Extracted Information:")
+    print("\nExtracted Information:")
     print(extracted_info)
-
-# Configuration for the Ollama API client
-client = OpenAI(
-    base_url='http://localhost:11434/v1',
-    api_key='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'
-)
 
 if __name__ == "__main__":
     # Example usage
