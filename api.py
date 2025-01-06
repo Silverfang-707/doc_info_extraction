@@ -68,7 +68,7 @@ def main(docx_name, ollama_model):
 # Configuration for the Ollama API client
 client = OpenAI(
     base_url='http://localhost:11434/v1',
-    api_key='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'
+    api_key='llama3.2-vision'
 )
 
 if __name__ == "__main__":

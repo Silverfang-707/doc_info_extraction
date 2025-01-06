@@ -5,3 +5,4 @@ ocr-tamil
 pdf2image
 indic-nlp-library
 torch
+groq

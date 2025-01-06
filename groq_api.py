@@ -4,6 +4,7 @@ from docx import Document
 from groq import Groq
 import ocr
 import shutil
+import config
 
 # Function to extract text from a Word document
 def extract_text_from_docx(docx_path):
@@ -37,7 +38,7 @@ def get_relevant_context(prompt, vault_embeddings, vault_content, top_k=3):
 
 # Function to interact with the Groq API for structured information extraction
 def extract_parties_and_roles(doc_text, model):
-    client = Groq(api_key="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")
+    client = Groq(api_key=config.GROQ_API_KEY)
     prompt = f"""
     You're given the contents of a legal document written in Tamil. 
     Translate the given text from Tamil to English and extract information 
