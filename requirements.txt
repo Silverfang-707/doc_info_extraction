@@ -1,0 +1,7 @@
+ollama
+openai
+python-docx
+ocr-tamil
+pdf2image
+indic-nlp-library
+torch
