@@ -87,7 +87,7 @@ if __name__ == "__main__":
     # Example usage
     pdf_name = "test.pdf"  # PDF file name in the script's directory
     docx_name = "output_text.docx"  # The document created by the OCR pipeline
-    ollama_model = "llama3.2-vision"  # Ollama model to use
+    ollama_model = "llama-3.3-70b-versatile"  # Ollama model to use
     indic_nlp_resources_folder = "indic_nlp_resources"  # Folder name in the script's directory
     result = ocr.ocr_doc(pdf_name, indic_nlp_resources_folder)
     print(result)
