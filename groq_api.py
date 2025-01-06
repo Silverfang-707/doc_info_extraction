@@ -22,7 +22,7 @@ def extract_text_from_docx(docx_path):
 
 # Function to generate embeddings for text using Groq API
 def generate_embeddings(text, model="mxbai-embed-large"):
-    client = Groq(api_key="your_api_key_here")
+    client = Groq(api_key=config.GROQ_API_KEY)
     response = client.embeddings.create(model=model, input=text)
     return response["data"][0]["embedding"]
 
