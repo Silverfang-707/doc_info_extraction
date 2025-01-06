@@ -1,7 +1,5 @@
 import os
-import shutil
 from modules import pdf2img, transcribe
-import ocr
 def ocr_doc(pdf_name, indic_nlp_resources_folder):
     """
     Main function to convert a PDF into images, transcribe the text from the images, 
